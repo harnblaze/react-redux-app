@@ -1,9 +1,16 @@
 import taskReducer from "./task";
-import { legacy_createStore } from "redux";
+import { applyMiddleware, compose, legacy_createStore } from "redux";
+import { thunk } from "./middleware/thunk";
+
+const middlewareEnhancer = applyMiddleware(thunk);
 
 export default function configureStore() {
   return legacy_createStore(
     taskReducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    compose(
+      middlewareEnhancer,
+      window.__REDUX_DEVTOOLS_EXTENSION__ &&
+        window.__REDUX_DEVTOOLS_EXTENSION__()
+    )
   );
 }
