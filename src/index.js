@@ -22,6 +22,10 @@ const App = () => {
     store.dispatch(actions.titleChanged(taskId));
   };
 
+  const deleteTask = (taskId) => {
+    store.dispatch(actions.taskDeleted(taskId));
+  };
+
   return (
     <>
       <h1>APp</h1>
@@ -35,6 +39,7 @@ const App = () => {
             <button onClick={() => changeTitle(el.id)}>
               Поменять название
             </button>
+            <button onClick={() => deleteTask(el.id)}>Удалить задание</button>
             <hr />
           </li>
         ))}
