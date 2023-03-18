@@ -12,5 +12,9 @@ const todoService = {
     });
     return data;
   },
+  add: async (payload) => {
+    const { data } = await httpService.post(todosEndpoint, payload);
+    return data;
+  },
 };
 export default todoService;

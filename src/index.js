@@ -3,22 +3,26 @@ import ReactDOM from "react-dom/client";
 import configureStore from "./store/store";
 import {
   changeTitle,
+  createTask,
   getTasks,
+  getTasksLoadingStatus,
+  loadTasks,
   taskCompleted,
   taskDeleted,
 } from "./store/task";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import { getError } from "./store/errors";
 
 const store = configureStore();
 
 const App = () => {
-  const state = useSelector((state) => state.entities);
-  const isLoading = useSelector((state) => state.isLoading);
-  const error = useSelector((state) => state.error);
+  const tasks = useSelector(getTasks());
+  const isLoading = useSelector(getTasksLoadingStatus());
+  const error = useSelector(getError());
   const dispatch = useDispatch();
-
+  console.log(tasks, error);
   useEffect(() => {
-    dispatch(getTasks());
+    dispatch(loadTasks());
   }, [dispatch]);
 
   const completeTask = (taskId) => {
@@ -28,18 +32,22 @@ const App = () => {
   const deleteTask = (taskId) => {
     dispatch(taskDeleted(taskId));
   };
+  const addNewTask = () => {
+    dispatch(createTask({ userId: 1, title: "lorem ipsum", completed: false }));
+  };
+
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-  if (error) {
+  if (error.length > 0) {
     return <p>{error}</p>;
   }
   return (
     <>
       <h1>APp</h1>
-
+      <button onClick={addNewTask}>Создать задание</button>
       <ul>
-        {state.map((el) => (
+        {tasks.map((el) => (
           <li key={el.id}>
             <p>{el.title}</p>
             <p>{`Completed: ${el.completed}`}</p>
@@ -58,9 +66,7 @@ const App = () => {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <App />
+  </Provider>
 );
